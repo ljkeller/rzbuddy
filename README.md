@@ -1,6 +1,6 @@
 # RZBuddy
 
-The smart Treet dispenser
+The smart treat dispenser
 
 ## Information
 
