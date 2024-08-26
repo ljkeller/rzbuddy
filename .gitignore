@@ -1,0 +1,43 @@
+# Prerequisites
+*.d
+
+# Configs
+config/iotconnect-config-secrets.json
+
+# logging
+logs/*
+
+# Certs
+config/AmazonRootCA1.pem
+config/cert_rz_ai_treat_device.crt
+config/pk_rz_ai_treat_device.pem
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
