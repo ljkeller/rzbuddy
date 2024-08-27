@@ -14,6 +14,7 @@ Developed for the **RZBoard V2L Evaluation Kit**, the application leverages the 
 - [Software Components](#software-components)
 - [Stacks and Dependencies](#stacks-and-dependencies)
 - [Getting Started](#getting-started)
+- [Installing](#installing)
 - [License](#license)
 - [Contact](#contact)
 
@@ -110,6 +111,65 @@ A top-level view of the RZBuddy Pet Treat Dispenser hardware will be provided in
 
 If using the default RZBuddy config, make sure your servo data line is connected to gpio port 12 pin 0, and ground is connected properly for the servo.
 
+## Installing
+
+There are two primary methods to install the application:
+
+1. **Flash via Debugger**
+
+   Connect the RZBoard to your SEGGER J-Link debugger, connected to your machine running e2 studio. Build the project and flash the application to the board.
+
+2. **Load to RAM via UBoot**
+
+    In general, you need these 4 files in eMMC or uSD:
+
+    1. <NAME>_secure_vector.bin
+    2. <NAME>_secure_code.bin
+    3. <NAME>_non_secure_vector.bin
+    4. <NAME>_non_secure_code.bin
+
+    The procedure is like: get m33 files on your non-volatile storage, boot RZBoard into UBoot, and load the applications to RAM:
+
+    The following commands are sufficient if you're storing the files in eMMC device 0 partition 1:
+    > [!IMPORTANT]
+    > Replace `<NAME>` with the name of the application.
+
+    ```bash
+    dcache off
+    mmc dev 0
+    fatload mmc 0:1 0x0001FF80 <NAME>_secure_vector.bin
+    fatload mmc 0:1 0x42EFF440 <NAME>_secure_code.bin
+    fatload mmc 0:1 0x00010000 <NAME>_non_secure_vector.bin
+    fatload mmc 0:1 0x40010000 <NAME>_non_secure_code.bin
+    cm33 start_debug 0x1001FF80 0x00010000
+    dcache on
+    ```
+    
+    Personally, I set UBoot like the following:
+    ```bash
+    setenv bootcm33 'dcache off; mmc dev 0; fatload mmc 0:1 0x0001FF80 rzbuddy_m33_secure_vector.bin; fatload mmc 0:1 0x42EFF440 rzbuddy_m33_secure_code.bin; fatload mmc 0:1 0x00010000 rzbuddy_m33_non_secure_vector.bin; fatload mmc 0:1 0x40010000 rzbuddy_m33_non_secure_code.bin; cm33 start_debug 0x1001FF80 0x00010000; dcache on;'
+    setenv bootcmd 'run envboot; if test "${run_cm33}" = "1" || test "${run_cm33}" = "yes"; then run bootcm33; fi; mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcbootdto; else run netboot; fi; fi; run bootimage'
+    saveenv
+    ```
+
+    Next, I modify /boot/uEnv.txt to include the following:
+    ```bash
+    run_cm33=yes
+    ```
+
+    Lastly, I house the 4 files in /boot/ like the following:
+    ```bash
+    root@rzboard:~# ls -l /boot/
+    ....
+    -rwxr-xr-x 1 root root    28120 Aug 26 21:38 rzbuddy_m33_non_secure_code.bin
+    -rwxr-xr-x 1 root root     1984 Aug 26 21:38 rzbuddy_m33_non_secure_vector.bin
+    -rwxr-xr-x 1 root root      400 Aug 26 21:38 rzbuddy_m33_secure_code.bin
+    -rwxr-xr-x 1 root root       64 Aug 26 21:38 rzbuddy_m33_secure_vector.bin
+    -rwxr-xr-x 1 root root      273 Aug 26 23:45 uEnv.txt
+    ```
+    
+
+Option `1.` temporary, while `2.` is permanent.
 
 ## License
 
