@@ -1,6 +1,6 @@
 # RZBuddy M33 Application
 
-![RZBuddy Logo](path_to_logo_image)
+![rzbuddy_logo](https://github.com/user-attachments/assets/3a66af1c-c9bb-4bc6-a196-fe7ad99ec761)
 
 ## Overview
 
