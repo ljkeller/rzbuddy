@@ -22,6 +22,10 @@
 * Description  : RZ/V2L DRP-AI Sample Application for Darknet-PyTorch YOLOv3 MIPI Camera version
 ***********************************************************************************************************************/
 
+/*
+ * Several modifications have been made outside of the original Renesas code. See the git history for more details.
+*/
+
 /*****************************************
 * Includes
 ******************************************/
@@ -45,9 +49,6 @@
 
 namespace
 {
-    // The dog class is index 9 of the labels.txt file
-    // Temporary hack :)
-    const int32_t DOG_CLASS = 9;
     const char* RED_LED_FILEPATH = "/sys/class/leds/led_red/trigger";
     const char* LED_ON_VALUE = "default-on";
     const char* LED_OFF_VALUE = "none";

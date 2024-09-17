@@ -98,7 +98,7 @@ const static std::string drpai_file_path[5] =
     drpai_prefix+"/aimac_desc.bin",
     drpai_prefix+"/"+drpai_prefix+"_weight.dat",
 };
-#define TH_PROB                     (0.2f)
+#define TH_PROB                     (0.7f)
 #define TH_NMS                      (0.5f)
 /* Size of input image to the model */
 #define MODEL_IN_W                  (416)
