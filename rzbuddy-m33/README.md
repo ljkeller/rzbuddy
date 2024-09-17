@@ -121,55 +121,61 @@ There are two primary methods to install the application:
 
 2. **Load to RAM via UBoot**
 
-    In general, you need these 4 files in eMMC or uSD:
+In general, you need these 4 files in eMMC or uSD:
 
-    1. <NAME>_secure_vector.bin
-    2. <NAME>_secure_code.bin
-    3. <NAME>_non_secure_vector.bin
-    4. <NAME>_non_secure_code.bin
+1. <NAME>_secure_vector.bin
+2. <NAME>_secure_code.bin
+3. <NAME>_non_secure_vector.bin
+4. <NAME>_non_secure_code.bin
 
-    The procedure is like: get m33 files on your non-volatile storage, boot RZBoard into UBoot, and load the applications to RAM:
+The procedure is like: get m33 files on your non-volatile storage, boot RZBoard into UBoot, and load the applications to RAM:
 
-    The following commands are sufficient if you're storing the files in eMMC device 0 partition 1:
-    > [!IMPORTANT]
-    > Replace `<NAME>` with the name of the application.
+Here's a sample of how to copy m33 files over to be loaded by UBoot. In Renesas e2 studio: Right click `Debug` or `Release` folder > open in terminal (git bash or WSL if its on your system). Then, from the terminal:
+```bash
+scp *.bin root@rzboard:/boot/
+```
+This places the necessary files in eMMC device 0 partition 1.
 
-    ```bash
-    dcache off
-    mmc dev 0
-    fatload mmc 0:1 0x0001FF80 <NAME>_secure_vector.bin
-    fatload mmc 0:1 0x42EFF440 <NAME>_secure_code.bin
-    fatload mmc 0:1 0x00010000 <NAME>_non_secure_vector.bin
-    fatload mmc 0:1 0x40010000 <NAME>_non_secure_code.bin
-    cm33 start_debug 0x1001FF80 0x00010000
-    dcache on
-    ```
-    
-    Personally, I set UBoot like the following:
-    ```bash
-    setenv bootcm33 'dcache off; mmc dev 0; fatload mmc 0:1 0x0001FF80 rzbuddy_m33_secure_vector.bin; fatload mmc 0:1 0x42EFF440 rzbuddy_m33_secure_code.bin; fatload mmc 0:1 0x00010000 rzbuddy_m33_non_secure_vector.bin; fatload mmc 0:1 0x40010000 rzbuddy_m33_non_secure_code.bin; cm33 start_debug 0x1001FF80 0x00010000; dcache on;'
-    setenv bootcmd 'run envboot; if test "${run_cm33}" = "1" || test "${run_cm33}" = "yes"; then run bootcm33; fi; mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcbootdto; else run netboot; fi; fi; run bootimage'
-    saveenv
-    ```
+The following commands are sufficient if you're storing the files in eMMC device 0 partition 1:
+   
+> [!IMPORTANT]
+> Replace `<NAME>` with the name of the application.
 
-    Next, I modify /boot/uEnv.txt to include the following:
-    ```bash
-    run_cm33=yes
-    ```
+```bash
+dcache off
+mmc dev 0
+fatload mmc 0:1 0x0001FF80 <NAME>_secure_vector.bin
+fatload mmc 0:1 0x42EFF440 <NAME>_secure_code.bin
+fatload mmc 0:1 0x00010000 <NAME>_non_secure_vector.bin
+fatload mmc 0:1 0x40010000 <NAME>_non_secure_code.bin
+cm33 start_debug 0x1001FF80 0x00010000
+dcache on
+```
 
-    Lastly, I house the 4 files in /boot/ like the following:
-    ```bash
-    root@rzboard:~# ls -l /boot/
-    ....
-    -rwxr-xr-x 1 root root    28120 Aug 26 21:38 rzbuddy_m33_non_secure_code.bin
-    -rwxr-xr-x 1 root root     1984 Aug 26 21:38 rzbuddy_m33_non_secure_vector.bin
-    -rwxr-xr-x 1 root root      400 Aug 26 21:38 rzbuddy_m33_secure_code.bin
-    -rwxr-xr-x 1 root root       64 Aug 26 21:38 rzbuddy_m33_secure_vector.bin
-    -rwxr-xr-x 1 root root      273 Aug 26 23:45 uEnv.txt
-    ```
-    
+Personally, I set UBoot like the following:
+```bash
+setenv bootcm33 'dcache off; mmc dev 0; fatload mmc 0:1 0x0001FF80 rzbuddy_m33_secure_vector.bin; fatload mmc 0:1 0x42EFF440 rzbuddy_m33_secure_code.bin; fatload mmc 0:1 0x00010000 rzbuddy_m33_non_secure_vector.bin; fatload mmc 0:1 0x40010000 rzbuddy_m33_non_secure_code.bin; cm33 start_debug 0x1001FF80 0x00010000; dcache on;'
+setenv bootcmd 'run envboot; if test "${run_cm33}" = "1" || test "${run_cm33}" = "yes"; then run bootcm33; fi; mmc dev ${mmcdev}; if mmc rescan; then if run loadimage; then run mmcbootdto; else run netboot; fi; fi; run bootimage'
+saveenv
+```
 
-Option `1.` temporary, while `2.` is permanent.
+Next, I modify /boot/uEnv.txt to include the following:
+```bash
+run_cm33=yes
+```
+
+Lastly, I house the 4 files in /boot/ like the following:
+```bash
+root@rzboard:~# ls -l /boot/
+....
+-rwxr-xr-x 1 root root    28120 Aug 26 21:38 rzbuddy_m33_non_secure_code.bin
+-rwxr-xr-x 1 root root     1984 Aug 26 21:38 rzbuddy_m33_non_secure_vector.bin
+-rwxr-xr-x 1 root root      400 Aug 26 21:38 rzbuddy_m33_secure_code.bin
+-rwxr-xr-x 1 root root       64 Aug 26 21:38 rzbuddy_m33_secure_vector.bin
+-rwxr-xr-x 1 root root      273 Aug 26 23:45 uEnv.txt
+```
+
+Option `1.` is temporary, while `2.` is permanent.
 
 ## License
 
