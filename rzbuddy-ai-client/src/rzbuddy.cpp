@@ -1155,6 +1155,11 @@ err:
 main_proc_end:
     /*To terminate the loop in Capture Thread.*/
     img_obj_ready.store(0);
+
+    /* Ensure we're clearing the leds */
+    det.clear();
+    set_leds();
+
     printf("Main Process Terminated\n");
     return main_ret;
 }
