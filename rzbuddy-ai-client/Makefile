@@ -1,4 +1,4 @@
-all: 07_Animal_detection_usbcam_app \
+all: rzbuddy \
 
 OPENCV_LINK = -isystem ${SDKTARGETSYSROOT}/usr/include/opencv4 \
 	-lopencv_imgcodecs -lopencv_imgproc -lopencv_core -lopencv_highgui
@@ -31,11 +31,11 @@ SRC_AD_CAM = examples/rzbuddy_main.cpp \
 INC_DIR_AD_CAM = -I src/
 CFLAGS_AD_CAM = ${INC_DIR_AD_CAM}
 
-07_Animal_detection_usbcam_app: ${SRC_AD_CAM}
+rzbuddy: ${SRC_AD_CAM}
 	${CXX} -std=c++14 $(filter %.cpp,${SRC_AD_CAM}) ${CFLAGS_AD_CAM} \
 	${OPENCV_LINK} ${BSP_SDK_FLAG} \
 	-lpthread -O2 -ldl ${LDFLAGS} \
-	-o exe/animal_detection_usbcam_app
+	-o exe/rzbuddy
 
 clean:
-	rm -rf exe/animal_detection_usbcam_app
+	rm -rf exe/rzbuddy
